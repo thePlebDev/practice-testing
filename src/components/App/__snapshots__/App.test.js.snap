@@ -1,0 +1,9 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`App snapshots 1`] = `
+<div>
+  <h1>
+    the APP that smiles back
+  </h1>
+</div>
+`;
