@@ -1,12 +1,14 @@
 import React from 'react';
 
-import BeerList from '../BeerList';
+import NavBar from '../NavBar';
+
+
 
 const App = ()=>{
 
   return(
     <div>
-      <BeerList />
+    <NavBar />
     </div>
   )
 }

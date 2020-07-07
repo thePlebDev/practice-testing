@@ -1,0 +1,159 @@
+SNAPSHOTS TESTS WITH JEST:
+-react already comes with jest
+- so the first test that we should write is one that makes sure that our component renders without any errors
+- jest lets us use create a snapshot of our rendered component and run this snapshot against future snapshots. When a
+future snapshot changes we will get notified during the test. we can either accept the snapshot change or deny it and
+investigate the error
+- jest stores the snapshots in a folder. Only that way it can show the diff to future snapshots
+- this says that we have to install a utility library before we can write snapshot tests. Even the documentation says
+that we have to do that. So lets install the stuff.
+
+- the snapshot testing allows us to check and make sure that our UI does not change unexpectedly
+- instead of rendering the graphical UI, which would require building the entire app, we can use a test renderer to
+quickly generate a serializable value for our React tree.
+- so basically with snapshot testing, the first time we create a test, is the first time that the snapshot file
+is created and then that snapshot gets used for testing in the future, if the future snapshot is correct then it will
+pass and if it is different. it will fail and we can either choose to update it or investigate the error
+
+-snapshot tests are a complement for conventional tests not a replacement. They are not for everything they are
+optomized for a different case than normal assertion-based tests
+
+- snapshot testing is prefect for things that are not clearly defined and may change often
+- so the snapshot tests are for UI testing mostly
+
+- so when testing we create a test to make sure that it renders correctly and also a snapshot test to make sure that
+the ui stays the same way.
+- snapshot testing is not test driven development. you get the component working and then you write the test
+- it doesnt replace other testing libraries and techniques. We can still use Enzyme and other thing for the TDD
+- the .toJSON(); method does exactly what it says it is doing. it turns it into JSON, which makes it easier to store
+in the snapshot file.
+
+- the expect(tree).toMatchSnapshot() does two things:
+1) if the snapshot already exists it compoares the new snapshot in the tree to the one on disk. if they match, the
+test passes. If they don't, the test fails.
+2) If a snapshot does not already exist, it creates on, and the test passes
+
+- jest will specific directory, called _snapshots_, for a snapshot that matches the running test file.
+- before the snapshot tests we should make sure that the tests run manually
+
+- to the jest testing seems a littl emore specialized to the UI, important but not the main testing that I assume
+will be done with Enzyme.
+
+UNIT TESTING WITH ENZYME:
+- the unit tests can be used to complement the snapshot tests
+- so we install the enzyme dependencies and then we use shallow from enzyme to render the component and make sure
+that it renders what we want it to.
+-shallow renders the component without child components. this means that we can make the test very dedicated to one
+component.
+- we should always begin with a shallow test
+
+- to get started with enzyme, we can install it with npm, we also need to install an Adapter corresponding to the version
+or react that we have.
+- since we are using react 16 we should use the adapter that corresponds to that version.
+- jest can be used to test JavaScript logic as integration or unit tests as well.
+-for enzyme we have to set enzyme up with is adapter in our jest testing enviroment. Jest offers a setup file to make
+this happen. first we need to create this Jest setup file on the command line. jest.setup.js
+- so we need to create the setup file called jest.setup.js
+- then in the setup file we are going to add some configuration code to make sure that Enzyme plays well with React.
+- so I guess we should try to get things set up with enzyme.
+- so we know that we have to create a setup file but not 100% sure on where to put it. right now we put it on
+the root directory, the same directory as the .gitignore file and we shall see if that works.
+- then we add the nessesary lines of code into the file
+- in this test file is where we set up the new adapter, we simply import configure and adapter and then
+
+            configure({ adapter: new Adapter() })
+
+- this should set up the new adapter and then we should be free to write test files with enzyme.
+- so lets just assume that it is working and start with shallow rendering of a component
+
+SHALLOW RENDERING:
+-shallow rendering is useful to constrain ourself to testing a component as a unit. and to ensure that our tests
+aren't indirectly asserting behaviour of child components
+- so basically shallow rendering lets us just test a single component.
+
+- so jest is our test runner and it makes everything work.
+- so right now we have a test to make sure that it renders something and we have a snapshot to make sure the ui is
+looking the way that we want it.
+- so lets make a test using the shallow api to make sure that the app component renders something useful.
+
+configure jest:
+-to actually run the setup file to configure Enzyme and the Adapter with jest,set setupFilesAfterEnv in our
+config file, check jests documentation for the possible locations of that config file.
+- jests configuration can be defined int he package.json file of our project or through a jest.config. file. so we
+are going to use the jest config file.
+- so I went into the package.json and setup the correct file paths for the configuration.
+
+- ok so now I am going to try the test to make sure that the app renders one component of the about page.
+- then we are going to need some kind of test block, lets read about what the describe is.
+- it is actually a testing block from Jest and it creates a group of tests together that are related
+
+- when we are writing a web application a good starting point would be testing every page of the app and every user
+interaction. also applications are made of units of code like functions and modules that need to be tested too
+- this is how the test flow should look:
+1) import the function to test
+2) give an input to the function
+3) define what to expect as the output
+4) check if the function produces the expected output.
+
+- if the component changes often then you should avoid snapshot testing. Snapshot testing is good for components that
+don't change often. to put it another way,write a snapshot test when the component is stable
+
+- so if the component has logic or state that changes, then snapshot testing is not the way to go
+- the react-test-renderer is a lobrary for rendering React component to pure JavaScript objects, but it can do
+alot more than creating objects
+
+-testing the internal implementation of an object is always a bad idea. This holds true for React, Javascript and any
+programming language.
+- we should test and keep in mind what the user should see. when building user interfaces the development
+process is driven by a functional test.
+- a functional test(end to end test) is a way to test web applications from the user's perspective.
+lets find out what we should tests and then test it.
+
+WHAT SHOULD WE TEST IN REACT:
+- the main reason that we write tests is to ensure that the app works the way it should.
+
+1)it must render. At the very least make sure that the component renders the correct thing, given props what should
+it output
+
+2) test the states: every conditional should accounted for, if the classNames are conditional, make sure to test that
+the className deciding logic is working right.
+
+3) test the events: If the component can be interacted with(clicked changed, or onAnything), test that the events
+work as expected
+
+4) test the edge cases:
+
+
+
+- for our first example we are using wrapper.containsAllMatchingElements(<patterNodes>) => true. This will return true
+wether or not all of the given React elements in patterNodes match an element in the wrapper's render tree.
+- so we could use this to make sure that our app component is rendering all the compoents that it is suppose to
+
+- we use the shallow(wrapper) to create a shallow render of the component
+
+- so we have finally figured out a few things, the first being that the enzyme configuration should be in the src folder
+and have the name of setupTests.js and then in this file is where we set up the new enzyme adapter.
+
+- then we actually wrote our first test and it is to see that the proper component are contained in the App component.
+this is done by using the shallow component to create the wrapper component and then going
+wrapper.containsAllMatchingElements([elements]) this will return a boolean and we can use toEqual(true) to see if the test
+passes.
+
+TEST 2. CONTAINER STATE:
+- for us the container is the App component. so we are going to test the state of the container. So initially it should
+contain an empty array of items.
+- states are maintained in function compoennts using useState hooks. As the state hooks are interanl to the compoennt
+they aren't exposed this they can't be tested by calling them. Thus to test it a stat has updated we simulate events
+or call the method props of the compoennt and check if the state has updated by determining the update to the props
+of the rendered component, in other words we look for side effects
+
+-simulate: can be used to simulate events ont he root node in the wrapper. it must be a single-node wrapper
+
+-lifecycle hooks such as useEffect aren't yet supported in shallow rendering, so we need to use mount instead of
+shallow to test those components for now.
+
+- so when we are testing funcitonal components with hooks we can test them simulating an event and check if the
+state has changed
+
+- so lets create a button component and test to see first if it renders and then test to see if it changes a state value
+when it gets clicked.

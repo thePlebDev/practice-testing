@@ -1,19 +1,21 @@
 import React from 'react';
 
-
 import { shallow } from 'enzyme';
 
 import App from './index.js';
-import BeerList from '../BeerList'
-import InputArea from '../InputArea'
+import NavBar from '../NavBar'
 
 
-describe('BeerListContainer',()=>{
-  it('should render InputArea and BeerList',() =>{
-    const wrapper = shallow(<App />);
+describe('tests for the App component',()=>{
+  it('should render',()=>{
+    const wrapper = shallow(<App />)
+    expect(wrapper).not.toBeNull()
+  })
+
+  it('should render with a NavBar component',()=>{
+    const wrapper = shallow(<App />)
     expect(wrapper.containsAllMatchingElements([
-      <InputArea/>,
-      <App/>
-    ])).to.equal(true)
+      <NavBar />
+    ])).toEqual(true)
   })
 })
