@@ -5,5 +5,11 @@ exports[`renders correctly when there are no items 1`] = `
   <h1>
     The navBar
   </h1>
+  <button
+    className="div-button-close"
+    onClick={[Function]}
+  >
+    Click me
+  </button>
 </div>
 `;

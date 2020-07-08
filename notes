@@ -157,3 +157,125 @@ state has changed
 
 - so lets create a button component and test to see first if it renders and then test to see if it changes a state value
 when it gets clicked.
+- ok so now we know that the component is rendered, next lets try to test some state using simulate
+
+- first we need to find the button element and then we need to call simulate on it with a click and then we need to
+find what we are changing do to the state change and see if that value if the same as what we expect.
+
+- very cool we are now able to test states.
+
+-so now lets try to do some useEffect stuff.
+- for useEffect we need to use mount instead of shallow
+- mount is a method that re-mounts the component, if it is not currently mounted. this can be used to simulate a
+component going through a unmount/mount lifecycle.
+
+HOW TO TEST IN REACT STEP BY STEP:
+
+STEP 1:DESCRIBE IT:
+- we should write our describe and out it tests and have them wrote out what we want to do, like rendering or click button
+- no actual test are to be written at this point, we just describe what we are about to build
+
+STEP 2: MAKE IT FAIL:
+- this step is literaly just make the test fail so that we can fix it
+
+STEP 3: MAKE IT GREEN:
+-this is the step where we make the test owrk again
+- check that wen you give the app an input it gives the desired ouput
+
+
+what to test?
+- we should test anything that is not static, controlled values, props, states, classNames
+-anywhere that we have JSX we need to import React
+- for event handlers we can create a spy and a spy is a mocked function that allows us to track its call arguments
+
+Testing a UseEffect hook:
+- the trick to shallow testing hooks like useEffect is to use spies. the spies are coming from jest with jest.spyOn().
+- the spyOn creates a mock function similar to jest.fn
+
+-a mock function:
+- the mock functions allow us to test the links between code by erasing the actual implementation of a function.
+capturing calls to the function.
+
+- so the spyOn() method returns a jest mock function.
+- when our app is running, useEffect will schedule its effect to be run after the first render. But in a test, most cases
+where you're shallow rendering you'd prefer useEffect call its callback immediately, so the effects happen during that
+first render.
+
+MOUNT():
+- full DOM rendering is ideal for use cases where you have component that may interact with DOM APIs or need to test
+components that are wrapped in higher order components.
+- this requires a dom, either the actual DOM or a fake on created by something like jsdom
+
+- so when trying to test useEffect, shallow definitely won't work .
+
+- So I think what I am going to do is try and recreate my application but with the tests
+
+- so our app test passed. now lets test to make sure that our app renders with the navBar component.
+
+WHAT CAN BE OMITTED IN TEXT COVERAGE:
+-third party libraries
+- constants
+- inline styles
+
+testing props:
+-As a rule, you can divide testing props into two tests . first check the render of default prop values. if the prop has
+default prop values. second,check the custom value of the prop; set the value and expect it to be recieved after
+the render of the component.
+
+- after creating a snapshot and covering the props with tests, this allows us to be sure in the correct rendering
+of the component but it does not give us full coverage. we need to test events and testing events is done in a number
+of ways.
+
+- you can go mock event => simulate it=> expect event was called
+- mock event => simulate event with params => expect event was called with passed params.
+- pass necessary props => render component => simulate event => expect a certain behavior on called event
+
+TESTING STATES:
+- the first one checks the current state
+- the second one checks state after calling event.
+
+- testing the data types can be done with react.PropTypes
+- make sure to use a test coverage tool
+
+MAIN INSTRUCTIONS FOR COMPONENT TESTING:
+1) create and test only one snapshot.
+2) test the props
+3) test the data types
+4) test the events
+5)test the states
+
+- so with these five things in mind we should be able to cover 90-100% of the code.
+- so right now I am testing the props and I am going to see if
+- so I should really again read up on the spread operator and the rest parameter. now that I think about it I think
+that the rest parameter is the one that is part of the function
+
+TESING THE NAVBAR:
+-so we need to import renderer from 'react-test-renderer'
+1) create and test the navBar snapshot
+2) test the props
+
+REST PARAMETER:
+- the rest parameter is indicated by three dots(...) preceding a named parameter. this names parameter becomes an array
+containing the rest of the parameters. so ya the rest parameter is the three dots that come before a name parameter in a function
+so if we see three dots before a function parameter name, then it is the rest parameter and that name after the array is now
+an array that contains all the rest of the paramters
+
+THE SPREAD OPERATOR:
+- the spread operator allows us to specify an array that should be split and passed in as separate arguments to a function
+so when we say
+- so the reason that I am getting undefined has to do with the reason that wehn we call prop on a shallow component, that
+component renders not the component itself. to return the props for the entire React component, use wrapper.instance().props
+
+SHALLOW RENDERING:
+-this will create a shallow render which means it will not render any of the components children. This makes it faster then mount
+which performs a deep render and therefore will render a component and all of its children.
+- if you need to test the children of a component then we should use mount, otherwise we should use shallow. children are
+just things that are inside of another element
+- well mount is under the full dom render API so at least we know that it has something to do with that.
+- so I guess we can just get back to testing
+
+- so now I am going to check the event of the button being pressed to open and close the navBar. I am going to do this
+but getting the element that the event is happening on and then I am going to simulate a clicked event, then finally I am going
+to check to make sure that the class name has changed
+
+- the problem seem to be with the simulate function.
