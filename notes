@@ -1,4 +1,4 @@
-SNAPSHOTS TESTS WITH JEST:
+audienceSNAPSHOTS TESTS WITH JEST:
 -react already comes with jest
 - so the first test that we should write is one that makes sure that our component renders without any errors
 - jest lets us use create a snapshot of our rendered component and run this snapshot against future snapshots. When a
@@ -279,3 +279,173 @@ but getting the element that the event is happening on and then I am going to si
 to check to make sure that the class name has changed
 
 - the problem seem to be with the simulate function.
+
+LIFECYCLE HOOKS:
+-hooks like useEffect aren't supported in shallow rendering, so we need to use mount instead of shallow to test
+these components
+- to test if these hooks we check for updates to props to test these hooks by simulating events or executing props as functions
+
+- props() is used to return all the props on an component but what even is a prop. a prop is a user defined element that
+is passed to it by its parent component. where state is just variables.
+
+- methods that don't update state can be refactored out of the component into a separate utils file and tested in it instead
+of having them inside the component.
+
+TESTING USEEFFECT HOOK:
+- so its still the same principles for tests. just test the effects that the useState hook has
+- in the useEffect tutorial the guy is using a mock function to test the useEffect, so what is the mock function anyways?
+mock functions:
+- allow use to test the links between code by erasing the actual implementation of a function, capturing call to the
+function when intantiated with new, and allowing test-time configuration of return values.
+- mock functions allow us to test links between code by erasing the actual implementation of a function,
+capturing calls to the function (and the parameters passed in those calls ) capturing instances of constructor functions
+when instantiated with new, and allowing test-time configuration of return values.
+- so basically it is a fake function that can recorded how many times it is called and what is passed into it but we can't
+actually use it.
+- so we can use the mock function and then inspect the mock functions state to ensure the callback is invoked as expected
+- ok we can actually have the mock function do stuff, ok.
+- so for us we could create a mock function that would run with use state and update the state and then we could check the
+updated state for our test to make sure that everything is working.
+
+-in the example he creates the mock function with nothing in it, he also puts the mock function into the component as a prop
+but I do not think that we have to do that.
+- so useEffect is just a function that takes a callback function and a list of values, and calls the callback once on
+first render and again every time the list of values changes. So we can call a funciton just once on first render by passing
+an empty dependency list.
+- the trick to shallow testing hooks like useEffect is to use spies. jest.spyOn(object,methodName), this creates a mock
+function but it also tracks calls to object[methodName]. it returns a mock function.
+
+mock function:
+- mock functions are also know as spies, because they let us spy on the behavior of a function that is called indirectly by
+some other code, rather than only testing the output. we can create a mock function with jest.fn(). if no implementation is
+given, the mock function will return undefined when invoked.
+-the mock funcitons let us spy on the behaviour of a function that is called indirectly by some other code, rather than the
+output.
+- so we can use a mock function to spy on the behaviour of a function that is called indirectly by some other code
+- so when we use the jest.spyOn() we are going to create a funciton that will let us check out the behavior a function that
+is called indirectly buy some other function.
+- so it lets us spy on the behavior of the function that gets called by another function
+
+- when the app is running, useEffect will schedule its effect to be run after the first render. in a test, most cases
+when we want shallow rendering we would prefer useEffect call its callback immediatel, so the effects happen during that
+first render. we can make that happen with a spy.
+
+      jest.spyOn(React,'useEffect').mockImplementation(f=> f());
+
+- this will make use effect do what we want, to take the callback f, and call it synchronously. Then our tests can have
+assertions on the side effects of our function,and on what got passed to useEffect
+-in our spyOn method we are overriding the original function the mockImplementation(f=> f()); seems to be the way that
+we are over riding the original function.
+
+- we also can't just import useEffect normaly, this seems super hacky but if it works, it is good enough for me.
+- when we go to call useEffect we have to use it like React.useEffect
+- ok that seeeemmmmed super hacky and to me it gave off a bad smell.
+
+- lets just see what jest has to say about it instead of trying to jam it down enzyme
+
+DATA FETCHING WITH JEST:
+-instead of calling real APIs, we can mock request with dummy data. Mocking data fatching with "fake" data prevents flaky
+tests due to an unavailable backend, and it makes them run faster. also act gets used with data fetching but what is it
+act():
+- when writing UI tests, tasks like rendering, user events, or data fetching can be considered as 'units' of interaction
+with a user interface. React provides a helper called act() that makes sure all updates related to these 'units' have
+been processed and applied to the DOM before you make any assertions.
+
+- the first thing that we do is create the fake data
+- the next thing tells us to do this:jest.spyOn(global,"fetch").mockImplementation(()=>{
+    Promise.resolve({
+      json:()=> Promise.resolve(fakeUser)
+    })
+})
+- so lets try to decipher what the heck is going on here.
+
+- so  spyOn(object,methodName)
+- the object is global then and the methodName is fetch
+
+- this creates a mock function similar to jest.fn but also tracks calls to object[methodName]. Returns a jest mock function
+- then what does the mockImplementation function do.
+- so by defualt it calls a spied method and if we want to have different behaviour we can overwrite that spied function
+we would use .mockImplementation(()=>customImplementation)
+
+-so by defualt the spyOn method calls a unknow function called spied but we want to call our own function when this function
+gets called.
+- so when our function gets called it is resolving a promise with the fake data that we made to implement a backend call
+
+UNDERSTADING JEST MOCKS:
+- mocking is a technique to isolate test subjects by replacing dependencies with objects that you can control and inspect.
+- a dependency can be anything the subject depends on, but it is typically a module that the subject imports
+- mocking is used to replace depedencies with object that we can control and inspect. typically a dependency is a module
+that the subject imports.
+
+- the goal of mocking is to replace somethign we don't control with something that we do, so we can replace something
+with all of the features that we need
+- the mock function provides features to:
+-capture calls, set return values, change implementation
+
+- the easiest way to create a mock function instance is with jest.fn()
+
+- mock functions, also know as spies, are special functions that allos us to track how a particular function is called by external
+code. instead of just testing the ouput of the function, we can gain additional information about how a function was used.
+- by using mock functions, we can know the following
+    -the number of calls it recieved
+    - argument values used on each invocation
+    - the 'context' or 'this' value on each invocation
+    - How the function exited and what values were produced
+
+WHEN TO USE MOCK FUNCTIONS:
+- We can use mock functions when we want to replace a specific function return value.
+
+
+HOW DOES JEST.FN WORK:
+- the jets.fn method is, by itself, a higher-order function.It's a factory method that creates new, unused mock functions.
+- manual mocks
+- manual mocks are sued to stub out functionality with mock data. instead of accessing a remote resource like website or
+database, we might want to create a manual mock that allows us to use fake data, this ensures our tests will be fast and not
+flaky
+-Manual mocks are defined by writing a module in a __mocks__/ subdirectory immediately adjacent to the module.
+
+-still not 100% on these mock functions and how to test useEffect api, so I guess for now Lets just try to test some other shit,
+- can still check the proptypes, that is something that we can definitely can do.
+
+TESTING DATA TYPES:
+-we can use jest-extended for this.
+
+FOR THE FILAL TIME. WHAT SHOULD BE TESTED?
+1) make sure that it renders
+2)test the ouput, given a set of props. What is to be expect as the output.
+3)every conditional should be accounted for
+4) test the events
+5)test the edge cases
+
+
+-when writing test we should be conserned with observable behaviour. Testing user observable behaviour means writing
+tests against components that test:
+  - how the component is rendered
+  - how the component is re-rendered when user interact with the DOM
+  - how props/ state control what is rendered
+
+- I think I am going to leave the test for the third project that I do. For now I just want to create some portfolio
+projects.
+
+                                            THE READ ME FILE:
+
+WHAT IS IT:
+-it is a text file that introduces and explain a project. it contains information that is commonly required to understand
+what the project is about.
+
+WHY SHOULD I MAKE IT:
+- it's an easy way to answer questions that the audiences will likely have regarding how to install and use the project and
+also how to collaborate with us to use it
+
+WHERE SHOULD I PUT IT:
+- in the top level directory of the project. This is where somone who is new to the project will start out
+
+SUGGESTIONS FOR A GOOD README:
+- too long is better than too short
+
+NAME
+- choose the name for our project.
+
+DESCRIPTION
+-let people know what the project can do specifically. Provide context and add a link to any reference visitors might be
+unfamiliar with.

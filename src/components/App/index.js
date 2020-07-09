@@ -1,6 +1,7 @@
 import React,{useState} from 'react';
 
 import NavBar from '../NavBar';
+import HomeRequest from '../HomeRequest';
 
 
 
@@ -10,6 +11,7 @@ const App = ()=>{
   return(
     <div>
     <NavBar  />
+    <HomeRequest />
     </div>
   )
 }
